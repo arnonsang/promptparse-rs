@@ -6,6 +6,7 @@ pub mod generate;
 pub mod merchant;
 pub mod validate;
 pub use barcode::BotBarcode;
+pub use validate::BillPayment;
 
 use std::fmt;
 
@@ -121,6 +122,16 @@ pub fn parse(payload: &str) -> Result<Qr<'_>> {
     })
 }
 impl<'a> Qr<'a> {
+    /// Read a field inside a template. Missing fields return None and malformed templates return an error.
+    pub fn get_subtag(&self, parent: &str, child: &str) -> Result<Option<&'a str>> {
+        let Some(value) = self.get(parent) else {
+            return Ok(None);
+        };
+        Ok(decode(value)?
+            .into_iter()
+            .find(|tag| tag.id == child)
+            .map(|tag| tag.value))
+    }
     pub fn get(&self, id: &str) -> Option<&'a str> {
         self.tags.iter().find(|t| t.id == id).map(|t| t.value)
     }

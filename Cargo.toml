@@ -1,5 +1,5 @@
 [package]
-name = "promptparse"
+name = "promptparse-rs"
 version = "0.1.0"
 edition = "2021"
 authors = ["Arnon Sang-ngern"]
@@ -9,5 +9,8 @@ repository = "https://github.com/arnonsang/promptparse-rs"
 readme = "README.md"
 keywords = ["promptpay", "emvco", "thai", "qrcode", "truemoney"]
 categories = ["encoding", "parser-implementations"]
-documentation = "https://docs.rs/promptparse"
+documentation = "https://docs.rs/promptparse-rs"
 include = ["src/**", "tests/**", "docs/**", "Cargo.toml", "README.md", "LICENSE.md", "Cargo.lock"]
+
+[lib]
+name = "promptparse"

@@ -93,3 +93,23 @@ fn merchant_operator_and_amount_edge_cases() {
     let qr = generate::any_id(ProxyType::NationalId, "1234567890123", Some(u64::MAX)).unwrap();
     assert_eq!(validate::any_id(&qr).unwrap().satang, Some(u64::MAX));
 }
+
+#[test]
+fn bank_slip_checksum_modes() {
+    let full = "0023000600000101030020202815102TH910409F4";
+    let short = "0023000600000101030020202815102TH91049F4";
+    let slip = validate::slip_verify_strict(full).unwrap();
+    assert_eq!(slip.trans_ref, "81");
+    assert_eq!(validate::slip_verify(short).unwrap(), slip);
+    assert!(validate::slip_verify_strict(short).is_err());
+    assert!(validate::slip_verify(&short.replace("9F4", "9F5")).is_err());
+}
+
+#[test]
+fn nested_lookup_reports_invalid_template() {
+    let qr = parse("30070103ไทย5904shop").unwrap();
+    assert_eq!(qr.get_subtag("30", "01").unwrap(), Some("ไทย"));
+    assert_eq!(qr.get_subtag("30", "02").unwrap(), None);
+    assert_eq!(qr.get_subtag("29", "01").unwrap(), None);
+    assert!(qr.get_subtag("59", "01").is_err());
+}

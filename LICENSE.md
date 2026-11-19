@@ -1,6 +1,7 @@
 MIT License
 
 Copyright (c) 2023 Maythiwat Chomchuen
+Copyright (c) 2025 Theerawat Patthawee (Rust implementation)
 Copyright (c) 2026 Arnon Sang-ngern (Rust port and additions)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

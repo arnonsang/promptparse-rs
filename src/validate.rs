@@ -101,6 +101,12 @@ pub struct BillPayment<'a> {
     pub ref3: Option<&'a str>,
     pub satang: Option<u64>,
 }
+impl BillPayment<'_> {
+    /// Generate a domestic bill-payment payload from these named fields, with the amount in satang.
+    pub fn to_payload(&self) -> Result<String> {
+        crate::generate::bill_payment(self.biller_id, self.ref1, self.ref2, self.ref3, self.satang)
+    }
+}
 pub fn bill_payment(payload: &str) -> Result<BillPayment<'_>> {
     let qr = parse_checked(payload, "63")?;
     let t = account(&qr, "30", BILL)?;
@@ -131,7 +137,11 @@ pub fn slip_verify(payload: &str) -> Result<Slip> {
             data = &repaired;
         }
     }
-    let qr = parse_checked(data, "91")?;
+    slip_verify_strict(data)
+}
+/// Require the full four-digit CRC exactly as it appears on the bank slip.
+pub fn slip_verify_strict(payload: &str) -> Result<Slip> {
+    let qr = parse_checked(payload, "91")?;
     let t = template(&qr, "00")?;
     if field(&t, "00")? != "000001" {
         return Err(Error::InvalidField("slip type"));
